@@ -9,6 +9,7 @@ branches:
   only:
     - develop
     - master
+    - unittest
 
 before_install:
     - echo Install dependencies
@@ -21,7 +22,7 @@ install:
     - travis-ci/build-deb-packages.sh
 
 script:
-    - cd /home/travis/build/A-j-K/indi/build/libindi/test
+    - cd build/libindi/test
     - ctest -V
     
 
