@@ -9,7 +9,7 @@ branches:
   only:
     - develop
     - master
-    - unittest
+    - libindi-unittest
 
 before_install:
     - echo Install dependencies
