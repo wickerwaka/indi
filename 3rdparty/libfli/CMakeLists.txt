@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.4.7)
+cmake_minimum_required(VERSION 3.0)
 PROJECT(libfli CXX C)
 
 include(GNUInstallDirs)
@@ -25,4 +25,4 @@ TARGET_LINK_LIBRARIES(fli -lm)
 #add an install target here
 INSTALL(FILES libfli.h DESTINATION include)
 
-INSTALL(TARGETS fli LIBRARY DESTINATION lib)
+INSTALL(TARGETS fli LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
