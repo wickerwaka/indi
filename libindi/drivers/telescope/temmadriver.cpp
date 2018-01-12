@@ -113,7 +113,7 @@ bool TemmaMount::initProperties()
     serialConnection->setDefaultBaudRate(Connection::Serial::B_19200);
     serialConnection->setParity(1);
 
-    addSimulationControl();
+    addAuxControls();
 
     // TODO enable later
 #if 0
@@ -331,11 +331,34 @@ bool TemmaMount::SendCommand(const char *cmd, char *response)
             strncpy(response, "R0", TEMMA_BUFFER);
             break;
 
+        // Handle other commands
         default:
-            DEBUGF(INDI::Logger::DBG_ERROR, "Command %s is unhandled in Simulation.", cmd);
-            return false;
-        }
+            if (!strcmp(cmd, "STN-ON"))
+            {
+                DEBUG(INDI::Logger::DBG_DEBUG, "Simulated motor is ON");
+                MotorStatus = true;
+                if (response)
+                    strcpy(response, "on");
+            }
+            else if (!strcmp(cmd, "STN-OFF"))
+            {
+                DEBUG(INDI::Logger::DBG_DEBUG, "Simulated motor is OFF");
+                MotorStatus = false;
+                if (response)
+                    strcpy(response, "off");
+            }
+            else if (!strcmp(cmd, "STN-COD"))
+            {
+                strcpy(response, MotorStatus ? "on": "off");
+            }
+            else
+            {
+                DEBUGF(INDI::Logger::DBG_ERROR, "Command %s is unhandled in Simulation.", cmd);
+                return false;
+            }
 
+            return true;
+        }
         return true;
     }
 
@@ -1329,11 +1352,11 @@ void TemmaMount::mountSim()
         break;
 
     case SCOPE_TRACKING:
+        da = 0;
+        dx = 0;
         switch (IUFindOnSwitchIndex(&TrackModeSP))
         {
         case TRACK_SIDEREAL:
-            da = 0;
-            dx = 0;
             break;
 
         case TRACK_LUNAR:
