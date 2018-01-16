@@ -577,7 +577,16 @@ bool QHYCCD::Connect()
     {
         DEBUGF(INDI::Logger::DBG_SESSION, "Connected to %s.", camid);
 
-        cap = CCD_CAN_ABORT | CCD_CAN_SUBFRAME | CCD_HAS_STREAMING;
+        cap = CCD_CAN_SUBFRAME | CCD_HAS_STREAMING;
+
+        // Orion StarShoot AutoGuider reporting as "QHY5-M-" crashes when
+        // attempting to stream and fails to capture any futher frames after
+        // abort is called.
+        if (!isQHY5M())
+        {
+            cap |= CCD_CAN_ABORT;
+        }
+
 
         // Disable the stream mode before connecting
         ret = SetQHYCCDStreamMode(camhandle, 0);
@@ -1108,7 +1117,7 @@ void QHYCCD::TimerHit()
 
     if (InExposure)
     {
-        long timeleft = calcTimeLeft();
+        float timeleft = calcTimeLeft();
 
         if (timeleft < 1.0)
         {
@@ -1361,6 +1370,12 @@ bool QHYCCD::isQHY5PIIC()
 {
     return std::string(camid, 9) == "QHY5PII-C";
 }
+
+bool QHYCCD::isQHY5M()
+{
+    return strcmp(camid, "QHY5-M-") == 0;
+}
+
 
 void QHYCCD::updateTemperatureHelper(void *p)
 {

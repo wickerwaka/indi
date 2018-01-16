@@ -110,6 +110,8 @@ class QHYCCD : public INDI::CCD, public INDI::FilterInterface
     void setCooler(bool enable);
     // Check if the camera is QHY5PII-C model
     bool isQHY5PIIC();
+    // Check if the camera is QHY5-M- model
+    bool isQHY5M();
 
     // Temperature update
     void updateTemperature();
